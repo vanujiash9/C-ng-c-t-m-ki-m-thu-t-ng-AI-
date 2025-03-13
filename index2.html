@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Công Cụ Tìm Kiếm Thuật Ngữ AI</title>
+  <link rel="stylesheet" href="./index.css">
+  <!-- Font Awesome để dùng icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body data-theme="light">
+  <header>
+    <h1>Công Cụ Tìm Kiếm Thuật Ngữ AI</h1>
+    <p>Tra cứu từ điển thuật ngữ trí tuệ nhân tạo</p>
+  </header>
+  
+  <div class="container">
+    <!-- Nút chức năng -->
+    <div class="login-container">
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i> Chế độ tối
+      </button>
+      <button class="login-button" id="loginBtn">
+        <i class="fas fa-user"></i> Đăng nhập
+      </button>
+    </div>
+    
+    <!-- Thống kê -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value">8+</div>
+        <div class="stat-label">Thuật ngữ AI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Danh mục</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">20</div>
+        <div class="stat-label">Từ khóa</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Cập nhật</div>
+      </div>
+      <!-- Thẻ hiển thị “Thuật ngữ mới” -->
+      <div class="stat-card" id="recentlyAddedCard">
+        <div class="stat-value" style="font-size: 1rem;">Thuật ngữ mới</div>
+        <ul id="recentlyAddedList" style="margin-top: 0.5rem; text-align: left; padding-left: 20px;"></ul>
+      </div>
+    </div>
+    
+    <!-- Phần tìm kiếm và bộ lọc -->
+    <div class="search-container">
+      <div class="search-header">
+        <h2 class="search-title">Tìm kiếm thuật ngữ</h2>
+        <div class="dictionary-controls">
+          <div class="control-buttons">
+            <button class="export-button" id="exportBtn">
+              <i class="fas fa-download"></i> Xuất dữ liệu
+            </button>
+            <button class="new-term-button" id="openNewTermModal">
+              <i class="fas fa-plus"></i> Thêm Thuật Ngữ
+            </button>
+            <button class="update-button" id="updateBtn">
+              <i class="fas fa-sync-alt"></i> Cập nhật mới
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="search-box">
+        <div class="search-wrapper">
+          <input type="text" class="search-input" id="searchInput" placeholder="Nhập thuật ngữ, từ khóa hoặc định nghĩa...">
+          <div class="suggestions" id="searchSuggestions"></div>
+        </div>
+        <!-- Nút tìm kiếm đã bị xóa theo yêu cầu -->
+      </div>
+      
+      <div class="filters">
+        <div class="filter-group">
+          <label class="filter-label" for="categoryFilter">Phân loại</label>
+          <select class="filter-select" id="categoryFilter">
+            <option value="">Tất cả</option>
+            <option value="ml">Học máy</option>
+            <option value="reasoning">Suy luận</option>
+            <option value="systems">Hệ thống</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label" for="applicationFilter">Ứng dụng</label>
+          <select class="filter-select" id="applicationFilter">
+            <option value="">Tất cả</option>
+            <option value="ml">Học máy</option>
+            <option value="optimization">Tối ưu hóa</option>
+            <option value="reasoning">Suy luận</option>
+            <option value="control">Điều khiển</option>
+            <option value="simulation">Mô phỏng</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label" for="sortFilter">Sắp xếp theo</label>
+          <select class="filter-select" id="sortFilter">
+            <option value="name">Tên thuật ngữ (A-Z)</option>
+            <option value="name-desc">Tên thuật ngữ (Z-A)</option>
+            <option value="relevance">Độ liên quan</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Chế độ xem kết quả -->
+    <div class="view-toggle-container">
+      <button class="view-button active" id="tableViewBtn" title="Xem dạng bảng">
+        <i class="fas fa-table"></i>
+      </button>
+      <button class="view-button" id="cardViewBtn" title="Xem dạng thẻ">
+        <i class="fas fa-th-large"></i>
+      </button>
+    </div>
+    
+    <!-- Loading indicator -->
+    <div class="loading" id="loadingIndicator">
+      <div class="loading-spinner"></div>
+      <p>Đang tải dữ liệu...</p>
+    </div>
+    
+    <!-- Kết quả tìm kiếm -->
+    <div class="results-container">
+      <div class="results-header">
+        <h2>Kết quả tìm kiếm</h2>
+      </div>
+      <div class="pagination" id="pagination"></div>
+      <table id="aiTermsTable">
+        <thead>
+          <tr>
+            <th>Thuật ngữ</th>
+            <th>Định nghĩa</th>
+            <th>Keywords</th>
+            <th>Tác vụ</th>
+          </tr>
+        </thead>
+        <tbody id="aiTermsTableBody">
+          <!-- Dữ liệu được render từ JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Modal Thêm Thuật Ngữ Mới -->
+  <div id="newTermModal" class="modal">
+    <div class="modal-content">
+      <button class="close-button" id="closeNewTermModal">&times;</button>
+      <h2>Thêm Thuật Ngữ Mới</h2>
+      <form id="newTermForm">
+        <div class="form-group">
+          <label for="newTerm">Thuật ngữ:</label>
+          <input type="text" id="newTerm" required>
+        </div>
+        <div class="form-group">
+          <label for="newDefinition">Định nghĩa:</label>
+          <input type="text" id="newDefinition" required>
+        </div>
+        <div class="form-group">
+          <label for="newKeywords">Keywords:</label>
+          <input type="text" id="newKeywords" required>
+        </div>
+        <div class="form-group">
+          <label for="newCategory">Danh mục:</label>
+          <input type="text" id="newCategory" required>
+        </div>
+        <div class="form-group">
+          <label for="newApplication">Ứng dụng:</label>
+          <input type="text" id="newApplication" required>
+        </div>
+        <button type="submit" class="form-submit">Thêm mới</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal Chỉnh Sửa Thuật Ngữ -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <button class="close-button" id="closeEditModal">&times;</button>
+      <h2>Chỉnh Sửa Thuật Ngữ</h2>
+      <form id="editForm">
+        <input type="hidden" id="originalTerm">
+        <div class="form-group">
+          <label for="editTerm">Thuật ngữ:</label>
+          <input type="text" id="editTerm" required>
+        </div>
+        <div class="form-group">
+          <label for="editDefinition">Định nghĩa:</label>
+          <input type="text" id="editDefinition" required>
+        </div>
+        <div class="form-group">
+          <label for="editKeywords">Keywords:</label>
+          <input type="text" id="editKeywords" required>
+        </div>
+        <div class="form-group">
+          <label for="editCategory">Danh mục:</label>
+          <input type="text" id="editCategory" required>
+        </div>
+        <div class="form-group">
+          <label for="editApplication">Ứng dụng:</label>
+          <input type="text" id="editApplication" required>
+        </div>
+        <button type="submit" class="form-submit">Cập nhật</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal Xuất Dữ Liệu -->
+  <div id="exportModal" class="modal">
+    <div class="modal-content">
+      <button class="close-button" id="closeExportModal">&times;</button>
+      <h2>Xuất Dữ Liệu</h2>
+      <form id="exportForm">
+        <div class="form-group">
+          <label for="exportFormat">Định dạng:</label>
+          <select id="exportFormat">
+            <option value="json">JSON</option>
+            <option value="pdf">PDF</option>
+            <option value="doc">Word (.doc)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exportScope">Phạm vi:</label>
+          <select id="exportScope">
+            <option value="all">Tất cả</option>
+            <option value="current">Kết quả hiện tại</option>
+          </select>
+        </div>
+        <button type="submit" class="form-submit">Xuất</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal Đăng Nhập -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <button class="close-button" id="closeLoginModal">&times;</button>
+      <h2>Đăng Nhập</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Tên đăng nhập:</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Mật khẩu:</label>
+          <input type="password" id="password" required>
+        </div>
+        <div id="loginError" class="error-message"></div>
+        <button type="submit" class="form-submit">Đăng nhập</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Nhúng jsPDF và autoTable qua CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  
+  <!-- File chứa font Times New Roman base64 (nếu muốn hỗ trợ tiếng Việt đầy đủ) -->
+  <!-- <script src="times_font.js"></script> -->
+  <script src="./times_font.js"></script>
+  <!-- File JS chính -->
+  <script src="script.js"></script>
+</body>
+</html>
